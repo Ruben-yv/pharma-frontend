@@ -1,0 +1,65 @@
+<section class="categories-page">
+  <header class="page-header">
+    <h1>Categorías</h1>
+    <a class="button button-primary" routerLink="/categorias/nuevo"><span aria-hidden="true">＋</span> Nueva categoría</a>
+  </header>
+
+  @if (errorMsg()) {
+    <div class="alert alert-error" role="alert">
+      <span>{{ errorMsg() }}</span>
+      <button class="text-button" type="button" (click)="cargarCategorias()">Reintentar</button>
+    </div>
+  }
+
+  <label class="search-box">
+    <span class="visually-hidden">Buscar por nombre</span>
+    <input
+      type="search"
+      placeholder="Buscar por nombre..."
+      [value]="busqueda()"
+      (input)="busqueda.set($any($event.target).value)"
+    />
+  </label>
+
+  @if (cargando()) {
+    <div class="table-state" role="status">Cargando categorías…</div>
+  } @else if (!errorMsg() && categorias().length === 0) {
+    <div class="table-state">Aún no hay categorías registradas. Usa “Nueva categoría” para crear la primera.</div>
+  } @else if (!errorMsg() && categoriasFiltradas().length === 0) {
+    <div class="table-state">No se encontraron categorías con ese nombre.</div>
+  } @else if (categoriasFiltradas().length > 0) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (categoria of categoriasFiltradas(); track categoria.id) {
+            <tr>
+              <td>{{ categoria.id ?? '—' }}</td>
+              <td class="category-name">{{ categoria.nombre }}</td>
+              <td>{{ categoria.descripcion || '—' }}</td>
+              <td>
+                <span class="status" [class.status-inactive]="categoria.estado === false">
+                  {{ categoria.estado === false ? 'Inactivo' : 'Activo' }}
+                </span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <a class="button button-outline" [routerLink]="['/categorias', categoria.id, 'editar']">Editar</a>
+                  <button class="button button-danger" type="button" (click)="eliminar(categoria.id, categoria.nombre)">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

@@ -1,0 +1,58 @@
+<section class="form-page">
+  <header class="form-heading">
+    <div>
+      <a class="back-link" routerLink="/categorias">← Volver a categorías</a>
+      <h1>{{ id() ? 'Editar categoría' : 'Nueva categoría' }}</h1>
+      <p>Completa los datos de la categoría del producto.</p>
+    </div>
+  </header>
+
+  @if (errorMsg()) {
+    <div class="form-error" role="alert">{{ errorMsg() }}</div>
+  }
+
+  @if (cargando()) {
+    <p class="form-state" role="status">Cargando categoría…</p>
+  } @else {
+    <form class="category-form" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="field">
+        <label for="nombre">Nombre <span aria-hidden="true">*</span></label>
+        <input id="nombre" type="text" formControlName="nombre" maxlength="50" autocomplete="off" />
+        @if (form.controls.nombre.touched && form.controls.nombre.hasError('required')) {
+          <small class="field-error">El nombre es obligatorio.</small>
+        } @else if (form.controls.nombre.touched && form.controls.nombre.hasError('minlength')) {
+          <small class="field-error">El nombre debe tener al menos 3 caracteres.</small>
+        } @else if (form.controls.nombre.touched && form.controls.nombre.hasError('maxlength')) {
+          <small class="field-error">El nombre no puede superar los 50 caracteres.</small>
+        }
+        @if (erroresServidor()['nombre']; as mensaje) {
+          <small class="field-error">{{ mensaje }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" formControlName="descripcion" rows="4" maxlength="200"></textarea>
+        @if (form.controls.descripcion.touched && form.controls.descripcion.hasError('maxlength')) {
+          <small class="field-error">La descripción no puede superar los 200 caracteres.</small>
+        }
+        @if (erroresServidor()['descripcion']; as mensaje) {
+          <small class="field-error">{{ mensaje }}</small>
+        }
+        <small class="hint">Máximo 200 caracteres.</small>
+      </div>
+
+      <div class="field field-status">
+        <label for="estado">Estado</label>
+        <label class="check-label"><input id="estado" type="checkbox" formControlName="estado" /> Activo</label>
+      </div>
+
+      <footer class="form-actions">
+        <a class="button button-cancel" routerLink="/categorias">Cancelar</a>
+        <button class="button button-save" type="submit" [disabled]="guardando() || cargando()">
+          {{ guardando() ? 'Guardando…' : 'Guardar categoría' }}
+        </button>
+      </footer>
+    </form>
+  }
+</section>
