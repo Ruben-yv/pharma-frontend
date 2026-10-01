@@ -1,0 +1,19 @@
+<section class="form-page">
+  <header class="heading"><a class="back" routerLink="/clientes">← Volver a clientes</a><h1>{{ id() ? 'Editar cliente' : 'Nuevo cliente' }}</h1><p>Completa los datos del cliente.</p></header>
+  @if (errorMsg()) { <div class="error" role="alert">{{ errorMsg() }}</div> }
+  @if (cargando()) { <p class="state" role="status">Cargando cliente…</p> }
+  @else {
+    <form class="client-form" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <div class="grid">
+        <div class="field"><label for="dni">DNI *</label><input id="dni" formControlName="dni" inputmode="numeric" maxlength="8" />@if(form.controls.dni.touched && form.controls.dni.invalid){<small>Ingresa un DNI de exactamente 8 dígitos.</small>}@if(erroresServidor()['dni'];as e){<small>{{e}}</small>}</div>
+        <div class="field"><label for="nombres">Nombres *</label><input id="nombres" formControlName="nombres" maxlength="100" />@if(form.controls.nombres.touched && form.controls.nombres.invalid){<small>Ingresa entre 2 y 100 caracteres.</small>}</div>
+        <div class="field"><label for="apellidos">Apellidos *</label><input id="apellidos" formControlName="apellidos" maxlength="100" />@if(form.controls.apellidos.touched && form.controls.apellidos.invalid){<small>Ingresa entre 2 y 100 caracteres.</small>}</div>
+        <div class="field"><label for="email">Correo *</label><input id="email" type="email" formControlName="email" maxlength="150" autocomplete="email" />@if(form.controls.email.touched && form.controls.email.invalid){<small>Ingresa un correo válido (máximo 150 caracteres).</small>}@if(erroresServidor()['email'];as e){<small>{{e}}</small>}</div>
+        <div class="field"><label for="telefono">Teléfono</label><input id="telefono" formControlName="telefono" inputmode="numeric" maxlength="9" />@if(form.controls.telefono.touched && form.controls.telefono.invalid){<small>El teléfono debe tener 9 dígitos.</small>}</div>
+        <div class="field"><label for="direccion">Dirección</label><input id="direccion" formControlName="direccion" maxlength="250" />@if(form.controls.direccion.touched && form.controls.direccion.invalid){<small>Máximo 250 caracteres.</small>}</div>
+      </div>
+      <label class="check"><input type="checkbox" formControlName="estado" /> Cliente activo</label>
+      <footer class="actions"><a class="button cancel" routerLink="/clientes">Cancelar</a><button class="button save" type="submit" [disabled]="guardando() || cargando()">{{ guardando() ? 'Guardando…' : 'Guardar cliente' }}</button></footer>
+    </form>
+  }
+</section>

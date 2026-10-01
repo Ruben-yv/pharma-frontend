@@ -1,0 +1,25 @@
+<section class="clients-page">
+  <header class="page-header"><h1>Clientes</h1><a class="button primary" routerLink="/clientes/nuevo">＋ Nuevo cliente</a></header>
+  @if (errorMsg()) { <div class="alert" role="alert"><span>{{ errorMsg() }}</span><button type="button" (click)="cargar()">Reintentar</button></div> }
+  <div class="toolbar">
+    <label class="search"><span class="visually-hidden">Buscar por DNI o nombre</span><input type="search" placeholder="Buscar por DNI o nombre..." [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" /></label>
+    <label class="page-size">Filas por página <select [value]="tamanio()" (change)="cambiarTamanio($any($event.target).value)"><option value="5">5</option><option value="10">10</option><option value="20">20</option></select></label>
+  </div>
+  @if (cargando()) { <div class="state" role="status">Cargando clientes…</div> }
+  @else if (!errorMsg() && clientes().length === 0) { <div class="state">Aún no hay clientes registrados.</div> }
+  @else if (!errorMsg() && filtrados().length === 0) { <div class="state">No se encontraron clientes en esta página.</div> }
+  @else if (filtrados().length > 0) {
+    <div class="table-wrap"><table><thead><tr>
+      <th><button class="sort" (click)="ordenar('dni')">DNI {{ ordenarPor() === 'dni' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}</button></th>
+      <th><button class="sort" (click)="ordenar('apellidos')">Apellidos y nombres {{ ordenarPor() === 'apellidos' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}</button></th>
+      <th>Correo</th><th>Teléfono</th><th>Estado</th><th>Acciones</th>
+    </tr></thead><tbody>
+      @for (cliente of filtrados(); track cliente.id) { <tr>
+        <td>{{ cliente.dni }}</td><td class="name">{{ cliente.apellidos }}, {{ cliente.nombres }}</td><td>{{ cliente.email }}</td><td>{{ cliente.telefono || '—' }}</td>
+        <td><span class="status" [class.inactive]="!cliente.estado">{{ cliente.estado ? 'Activo' : 'Inactivo' }}</span></td>
+        <td><div class="actions"><a class="button outline" [routerLink]="['/clientes', cliente.id, 'editar']">Editar</a><button class="button danger" [disabled]="!cliente.estado" (click)="darDeBaja(cliente)">Dar de baja</button></div></td>
+      </tr> }
+    </tbody></table></div>
+  }
+  @if (datosPagina(); as page) { <footer class="pagination"><span>Página {{ page.pagina + 1 }} de {{ page.totalPaginas }} · {{ page.totalElementos }} clientes</span><div><button class="button outline" [disabled]="pagina() === 0 || cargando()" (click)="cambiarPagina(-1)">Anterior</button><button class="button outline" [disabled]="page.ultima || cargando()" (click)="cambiarPagina(1)">Siguiente</button></div></footer> }
+</section>
