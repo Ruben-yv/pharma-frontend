@@ -27,6 +27,7 @@ export class ProductoList implements OnInit {
   protected readonly direccion = signal<Direccion>('asc');
   protected readonly resultado = signal<PaginaResponse<Producto> | null>(null);
   protected readonly categorias = signal<Categoria[]>([]);
+  protected readonly categoriasActivas = computed(() => this.categorias().filter((categoria) => categoria.estado === true));
   protected readonly categoriaFiltro = signal<number | null>(null);
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
