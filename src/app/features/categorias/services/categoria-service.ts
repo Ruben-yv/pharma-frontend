@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class CategoriaService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/categorias`;
+  private readonly url = `${environment.apiUrl}/v1/categorias`;
 
   listar() {
     return this.http.get<Categoria[]>(this.url);
