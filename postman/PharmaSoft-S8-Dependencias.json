@@ -1,0 +1,898 @@
+{
+  "item": [
+    {
+      "name": "Preparación",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 200', function () { pm.response.to.have.status(200); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "Consultar categorías",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 200.",
+            "url": {
+              "path": [
+                "categorias"
+              ],
+              "raw": "{{baseUrl}}/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 200', function () { pm.response.to.have.status(200); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "Consultar productos",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 200.",
+            "url": {
+              "path": [
+                "productos?pagina=0&tamanio=100&ordenarPor=id&direccion=asc"
+              ],
+              "raw": "{{baseUrl}}/productos?pagina=0&tamanio=100&ordenarPor=id&direccion=asc",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Altas",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 201', function () { pm.response.to.have.status(201); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-01 Crear producto válido",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto prueba\",\"categoriaId\":\"{{categoriaActivaId}}\",\"stock\":10,\"precio\":10.5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 201.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 400', function () { pm.response.to.have.status(400); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-02 Crear sin categoría",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Sin categoría\",\"stock\":2,\"precio\":5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 400.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 404', function () { pm.response.to.have.status(404); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-03 Crear con categoría inexistente",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Categoría no existe\",\"categoriaId\":999999,\"stock\":2,\"precio\":5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 404.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-04 Crear con categoría inactiva",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto categoría inactiva\",\"categoriaId\":\"{{categoriaInactivaId}}\",\"stock\":1,\"precio\":1,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-05 Repetir nombre",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto prueba\",\"categoriaId\":\"{{categoriaActivaId}}\",\"stock\":2,\"precio\":5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 400', function () { pm.response.to.have.status(400); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-06 Precio y stock inválidos",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto inválido\",\"categoriaId\":\"{{categoriaActivaId}}\",\"stock\":-1,\"precio\":0,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 400.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 201', function () { pm.response.to.have.status(201); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-07 Límites válidos",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Min\",\"categoriaId\":\"{{categoriaActivaId}}\",\"stock\":0,\"precio\":0.01,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 201.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 400', function () { pm.response.to.have.status(400); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "A-08 Nombre muy corto",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"AB\",\"categoriaId\":\"{{categoriaActivaId}}\",\"stock\":2,\"precio\":5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 400.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cambios",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 200', function () { pm.response.to.have.status(200); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "C-01 Cambiar a categoría activa",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto actualizado\",\"categoriaId\":\"{{categoriaDestinoId}}\",\"stock\":8,\"precio\":12,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 200.",
+            "url": {
+              "path": [
+                "productos",
+                "{{productoId}}"
+              ],
+              "raw": "{{baseUrl}}/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "C-02 Cambiar a categoría inactiva",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto categoría inactiva\",\"categoriaId\":\"{{categoriaInactivaId}}\",\"stock\":1,\"precio\":1,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "productos",
+                "{{productoId}}"
+              ],
+              "raw": "{{baseUrl}}/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "C-03 Desactivar categoría con productos",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"{{categoriaNombre}}\",\"descripcion\":\"\",\"estado\":false}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "categorias",
+                "{{categoriaActivaId}}"
+              ],
+              "raw": "{{baseUrl}}/categorias/{{categoriaActivaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "C-04 Crear tras desactivar en otra pestaña",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Producto categoría inactiva\",\"categoriaId\":\"{{categoriaInactivaId}}\",\"stock\":1,\"precio\":1,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "productos"
+              ],
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 404', function () { pm.response.to.have.status(404); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "C-05 Actualizar con categoría inexistente",
+          "request": {
+            "body": {
+              "raw": "{\"nombre\":\"Actualización inválida\",\"categoriaId\":999999,\"stock\":2,\"precio\":5,\"estado\":true}",
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Caso de práctica. Resultado esperado: HTTP 404.",
+            "url": {
+              "path": [
+                "productos",
+                "{{productoId}}"
+              ],
+              "raw": "{{baseUrl}}/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bajas",
+      "item": [
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 204', function () { pm.response.to.have.status(204); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "B-01 Dar de baja producto activo",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 204.",
+            "url": {
+              "path": [
+                "productos",
+                "{{productoId}}"
+              ],
+              "raw": "{{baseUrl}}/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "B-02 Dar de baja producto ya inactivo",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "productos",
+                "{{productoInactivoId}}"
+              ],
+              "raw": "{{baseUrl}}/productos/{{productoInactivoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 204', function () { pm.response.to.have.status(204); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "B-03 Eliminar categoría sin productos",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 204.",
+            "url": {
+              "path": [
+                "categorias",
+                "{{categoriaSinProductosId}}"
+              ],
+              "raw": "{{baseUrl}}/categorias/{{categoriaSinProductosId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "B-04 Eliminar categoría con productos dados de baja",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "categorias",
+                "{{categoriaConProductosInactivosId}}"
+              ],
+              "raw": "{{baseUrl}}/categorias/{{categoriaConProductosInactivosId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        },
+        {
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('HTTP esperado 409', function () { pm.response.to.have.status(409); });",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": [],
+          "name": "B-05 Eliminar categoría con productos activos",
+          "request": {
+            "description": "Caso de práctica. Resultado esperado: HTTP 409.",
+            "url": {
+              "path": [
+                "categorias",
+                "{{categoriaActivaId}}"
+              ],
+              "raw": "{{baseUrl}}/categorias/{{categoriaActivaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "value": "application/json",
+                "key": "Content-Type"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "value": "http://localhost:8080/api/v1",
+      "key": "baseUrl"
+    },
+    {
+      "value": "1",
+      "key": "categoriaActivaId"
+    },
+    {
+      "value": "2",
+      "key": "categoriaDestinoId"
+    },
+    {
+      "value": "3",
+      "key": "categoriaInactivaId"
+    },
+    {
+      "value": "4",
+      "key": "categoriaSinProductosId"
+    },
+    {
+      "value": "5",
+      "key": "categoriaConProductosInactivosId"
+    },
+    {
+      "value": "Categoría prueba",
+      "key": "categoriaNombre"
+    },
+    {
+      "value": "1",
+      "key": "productoId"
+    },
+    {
+      "value": "2",
+      "key": "productoInactivoId"
+    },
+    {
+      "key": "baseUrlSysventas",
+      "value": "http://localhost:8080/api"
+    }
+  ],
+  "info": {
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name": "PharmaSoft - S8 Dependencias",
+    "_postman_id": "e7b6c621-8a2d-435e-8a0f-c8a3e4004557",
+    "description": "Colección para la actividad S8. La guía exige baseUrl=http://localhost:8080/api/v1. El código local inspeccionado de sysventas declara /api/productos y /api/categorias; para probar ese backend, cambiar baseUrl a la variable alterna baseUrlSysventas (http://localhost:8080/api). Configurar IDs según datos de prueba y guardar respuestas/capturas reales."
+  }
+}

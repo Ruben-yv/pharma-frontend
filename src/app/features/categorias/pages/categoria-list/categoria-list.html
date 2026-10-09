@@ -52,6 +52,9 @@
               </td>
               <td>
                 <div class="row-actions">
+                  <a class="button button-outline" [routerLink]="'/productos'" [queryParams]="{ categoriaId: categoria.id }">
+                    Ver productos
+                  </a>
                   <a class="button button-outline" [routerLink]="['/categorias', categoria.id, 'editar']">Editar</a>
                   <button class="button button-danger" type="button" (click)="eliminar(categoria.id, categoria.nombre)">Eliminar</button>
                 </div>

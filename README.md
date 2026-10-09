@@ -1,6 +1,6 @@
 # PharmaSoft
 
-SPA en Angular 22 para administrar categorías mediante PharmaBackend.
+SPA en Angular 22 para administrar categorías, productos y clientes mediante PharmaBackend.
 
 ## Requisitos
 
@@ -24,7 +24,7 @@ Abre `http://localhost:4200`. La URL base de la API está en `src/environments/e
 - `src/app/layout`: layout principal, encabezado y sidebar.
 - `src/app/features`: módulos de negocio; actualmente Inicio y Categorías.
 
-El módulo de Categorías concentra sus rutas, modelo, servicio HTTP y páginas de listado y formulario. El servicio usa `http://localhost:8080/api/v1/categorias`, según la guía de la práctica.
+Los módulos de Categorías, Productos y Clientes concentran sus rutas, modelos, servicios HTTP y páginas de listado y formulario. Productos usa `http://localhost:8080/api/v1/productos`, con paginación, orden, filtro por categoría, selección de categorías activas y baja lógica.
 
 ## Compilar
 
