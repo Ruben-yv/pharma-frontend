@@ -883,16 +883,12 @@
     {
       "value": "2",
       "key": "productoInactivoId"
-    },
-    {
-      "key": "baseUrlSysventas",
-      "value": "http://localhost:8080/api"
     }
   ],
   "info": {
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "name": "PharmaSoft - S8 Dependencias",
     "_postman_id": "e7b6c621-8a2d-435e-8a0f-c8a3e4004557",
-    "description": "Colección para la actividad S8. La guía exige baseUrl=http://localhost:8080/api/v1. El código local inspeccionado de sysventas declara /api/productos y /api/categorias; para probar ese backend, cambiar baseUrl a la variable alterna baseUrlSysventas (http://localhost:8080/api). Configurar IDs según datos de prueba y guardar respuestas/capturas reales."
+    "description": "Colección para la actividad S8. Usar baseUrl=http://localhost:8080/api/v1. El backend sysventas expone las rutas versionadas de Productos y Categorías requeridas por la guía. Configurar los IDs según los datos disponibles y guardar respuestas/capturas reales."
   }
 }

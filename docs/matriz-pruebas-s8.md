@@ -1,42 +1,38 @@
-# Matriz de pruebas de dependencias entre Categorías y Productos
+# Evidencias y hallazgos de la práctica S8
 
-**Actividad Autónoma - Sesión 8**  
 **Estudiante:** Rubén Yactayo Varillas  
-**Base URL:** `http://localhost:8080/api/v1`  
-**Estado inicial requerido:** al menos tres categorías activas, una inactiva y ocho productos distribuidos entre ellas, incluido uno dado de baja.
+**Actividad:** CRUD dependiente de Productos y Categorías
+**Backend:** `sysventas`
+**Rama de trabajo:** `feature/productos-varillas`
 
-La ejecución integrada queda pendiente porque `localhost:8080` y Oracle (`localhost:1522`) no respondieron al revisar. Lo siguiente es una predicción basada en el código fuente disponible, no resultado HTTP observado. El backend `sysventas` expone `/api/productos` y `/api/categorias`, mientras la guía define `baseUrl=/api/v1`; se debe alinear la URL antes de ejecutar. Adjunta captura real y sustituye los estados “No ejecutado” por Pasa/Falla solo después de comprobar cada caso.
+## Estado de ejecución
 
-Para C-03 y B-04 se define una regla esperada que debe justificarse en el informe: una categoría no se desactiva si tiene productos activos, y no se elimina mientras conserve productos asociados, aunque estén dados de baja.
+El frontend compila y el backend compila. La integración todavía no se ejecutó: durante la revisión no respondieron `localhost:8080` ni Oracle en `localhost:1522`. Por ello, los resultados HTTP de la tabla siguen como **Pendientes** y deben cambiarse únicamente después de ejecutar cada caso. Las capturas de navegador y Red quedan para adjuntar.
 
-| ID | Operación | Precondición | Datos | Resultado esperado | Resultado obtenido (SPA y HTTP) | Estado | Evidencia |
-|---|---|---|---|---|---|---|---|
-| A-01 | Crear producto válido | Existe una categoría activa; nombre disponible. | `Producto A-01`, precio `5.50`, stock `10`, estado activo, ID de categoría activa. | HTTP 201; aparece en el listado con su categoría. | Previsto por código: 201 en /api/productos si categoría activa/existente; endpoint no ejecutado. Estado: No ejecutado. | `A-01_spa.png` |
-| A-02 | Crear producto sin categoría | Abrir Nuevo producto; dejar el selector sin elegir. | Omitir `categoriaId`; probar también el mismo cuerpo desde Postman. | SPA no envía POST; API responde 400 por campo requerido. | Previsto: la SPA bloquea; en /api/productos sin categoriaId, @NotNull produce 400. Sin ejecutar. Estado: No ejecutado. | `A-02_spa.png`, `A-02_postman.png` |
-| A-03 | Crear producto con categoría inexistente | Se conoce un ID que no existe. | Producto válido con `categoriaId: 999`. | API responde 404 con mensaje de categoría no encontrada. | Previsto: 404 por RecursosNoEncontradosException en ProductoServiceImpl.create(). Sin ejecutar. Estado: No ejecutado. | `A-03_postman.png` |
-| A-04 | Crear producto en categoría inactiva | Se conoce el ID de una categoría con `estado: false`. | Producto válido con el ID de esa categoría. | SPA no ofrece esa categoría; API debe rechazar con 409. | Riesgo confirmado en revisión: create() no consulta categoria.estado; podría aceptar (201). No ejecutar. Estado: No ejecutado. | `A-04_spa.png`, `A-04_postman.png` |
-| A-05 | Repetir nombre con otra capitalización | Ya existe un producto con ese nombre. | Enviar el mismo nombre con mayúsculas/minúsculas distintas. | API responde 409 por nombre duplicado; la SPA muestra el mensaje del servidor. | Previsto: 409 por existsByNombreIgnoreCase en alta. Sin ejecutar. Estado: No ejecutado. | `A-05_spa.png`, `A-05_postman.png` |
-| A-06 | Crear con precio y stock inválidos | Abrir el formulario de producto. | Precio `0`, stock `-1`; repetir directamente por API. | SPA bloquea el envío; API responde 400 e informa ambos campos en `validationErrors`. | Riesgo confirmado: DTO carece de @Positive/@Min para precio y stock; valores pueden aceptarse (201). Sin ejecutar. Estado: No ejecutado. | `A-06_spa.png`, `A-06_postman.png` |
-| C-01 | Cambiar a otra categoría activa | Existe un producto activo y dos categorías activas. | PUT válido con `categoriaId` de la segunda categoría. | HTTP 200; el listado muestra la nueva categoría. | Previsto: 200 para categoría existente. Sin ejecutar. Estado: No ejecutado. | `C-01_spa.png` |
-| C-02 | Cambiar a una categoría inactiva | Existe un producto y una categoría inactiva. | PUT del producto con el ID de la categoría inactiva; probar también por API. | SPA impide guardar; API debe rechazar con 409. | Riesgo confirmado: update() no comprueba estado de la categoría; podría aceptar (200). Sin ejecutar. Estado: No ejecutado. | `C-02_spa.png`, `C-02_postman.png` |
-| C-03 | Desactivar categoría con productos activos | Una categoría activa tiene uno o más productos activos. | Editar la categoría y cambiar `estado` a `false`. | Regla propuesta: API responde 409 y exige reasignar o dar de baja los productos antes. | Riesgo confirmado: CategoriaServiceImpl.update() no consulta productos; podría desactivar (200). Sin ejecutar. Estado: No ejecutado. | `C-03_spa.png`, `C-03_postman.png` |
-| C-04 | Registrar tras desactivar la categoría en otra pestaña | Pestaña 1 tiene abierto Nuevo producto con categoría X; pestaña 2 permite desactivar X. | Desactivar X en pestaña 2; volver a pestaña 1 e intentar registrar. | El producto no queda asociado a una categoría inactiva; API rechaza la operación. | La lista del formulario no se refresca; create() tampoco revisa estado; podría aceptar (201). Sin ejecutar. Estado: No ejecutado. | `C-04_pestanas.png`, `C-04_red.png` |
-| B-01 | Dar de baja producto activo | Existe un producto activo. | DELETE del ID del producto desde la SPA. | HTTP 204; después del refresco figura Inactivo y el botón queda deshabilitado. | DELETE backend elimina físicamente y responde 204; la fila no queda Inactiva. Sin ejecutar. Estado: No ejecutado. | `B-01_spa.png`, `B-01_postman.png` |
-| B-02 | Dar de baja el mismo producto otra vez | B-01 ya dejó el producto inactivo. | Repetir DELETE del mismo ID desde Postman. | API responde 409 indicando que ya está inactivo. | Después de DELETE físico, repetir apunta a ID inexistente y debería dar 404, no 409. Sin ejecutar. Estado: No ejecutado. | `B-02_postman.png` |
-| B-03 | Eliminar categoría sin productos | Categoría activa sin productos asociados. | DELETE del ID de la categoría. | HTTP 204; desaparece del listado y del selector de Productos. | Previsto: 204 si categoría no tiene referencias. Sin ejecutar. Estado: No ejecutado. | `B-03_spa.png`, `B-03_postman.png` |
-| B-04 | Eliminar categoría cuyos productos están dados de baja | Una categoría conserva productos asociados, todos con estado inactivo. | DELETE de la categoría. | Regla propuesta: API responde 409 porque los productos históricos aún la referencian. | No hay regla explícita en servicio; la FK puede impedir borrado con error no controlado. HTTP exacto no verificable. Estado: No ejecutado. | `B-04_spa.png`, `B-04_postman.png` |
-| A-07 | Crear producto en límites válidos | Existe categoría activa; nombre disponible. | Precio `0.01`, stock `0`, nombre de 3 caracteres. | HTTP 201; se aceptan los mínimos permitidos. | Previsto: nombre de 3 caracteres válido; DTO no limita precio/stock inferior; 201. Sin ejecutar. Estado: No ejecutado. | `A-07_spa.png`, `A-07_postman.png` |
-| A-08 | Crear producto con nombre demasiado corto | Abrir formulario de producto. | Nombre de 2 caracteres; probar también POST directo. | SPA no envía POST; API responde 400 por longitud mínima. | Previsto: 400 por @Size(min=3). Sin ejecutar. Estado: No ejecutado. | `A-08_spa.png`, `A-08_postman.png` |
-| C-05 | Actualizar con categoría inexistente | Existe un producto que se puede editar. | PUT válido con `categoriaId: 999`. | API responde 404 y el producto conserva su categoría anterior. | Previsto: 404 al no encontrar categoriaId. Sin ejecutar. Estado: No ejecutado. | `C-05_postman.png` |
-| B-05 | Eliminar categoría con productos activos | Categoría activa con al menos un producto activo. | DELETE del ID de la categoría. | API responde 409 y conserva la categoría relacionada. | No hay regla explícita en servicio; la FK puede impedir borrado con error no controlado. HTTP exacto no verificable. Estado: No ejecutado. | `B-05_spa.png`, `B-05_postman.png` |
+## Casos del paso 9
 
-## Resumen de ejecución
+| N.º | Acción | Resultado que se debe comprobar | Estado | Evidencia pendiente |
+|---:|---|---|---|---|
+| 1 | Abrir Productos desde el sidebar | `GET /api/v1/productos?pagina=0&tamanio=10&ordenarPor=nombre&direccion=asc`; la tabla muestra la categoría. | Pendiente | `01-listado.png` |
+| 2 | Hacer clic dos veces en Precio | Dos GET: `ordenarPor=precio&direccion=asc` y después `direccion=desc`. | Pendiente | `02-orden.png` |
+| 3 | Elegir 5 por página y avanzar | GET con `tamanio=5&pagina=1`; paginador en página 2. | Pendiente | `03-paginacion.png` |
+| 4 | Filtrar por una categoría | Solo productos de esa categoría entre los elementos de la página actual; sin nueva petición. | Pendiente | `04-filtro.png` |
+| 5 | Abrir Nuevo producto | El selector ofrece categorías activas, sin la categoría inactiva. | Pendiente | `05-categorias-activas.png` |
+| 6 | Registrar sin completar los campos | Se ven los errores de categoría, nombre y precio; no se envía POST. | Pendiente | `06-validacion.png` |
+| 7 | Registrar un producto válido | POST 201; aparece en la lista con el nombre de categoría. | Pendiente | `07-alta.png` |
+| 8 | Registrar otra vez el mismo nombre cambiando mayúsculas | POST 409; la SPA presenta el mensaje del backend. | Pendiente | `08-duplicado.png` |
+| 9 | Editar un producto de categoría inactiva | Se conserva la categoría original y se muestra como inactiva; no se permite guardar hasta elegir una activa. | Pendiente | `09-edicion-inactiva.png` |
+| 10 | Cambiar de categoría y guardar | PUT 200; la fila muestra la nueva categoría. | Pendiente | `10-cambio-categoria.png` |
+| 11 | Dar de baja un producto | DELETE 204; la fila indica Inactivo y el botón queda deshabilitado. | Pendiente | `11-baja-logica.png` |
+| 12 | Eliminar una categoría que tiene productos | DELETE 409 con el mensaje del backend; la categoría permanece. | Pendiente | `12-dependencia-categoria.png` |
 
-| Grupo | Casos | Ejecutados | Pasa | Falla |
-|---|---:|---:|---:|---:|
-| Altas | 8 | 0 | 0 | 0 |
-| Cambios | 5 | 0 | 0 | 0 |
-| Bajas | 5 | 0 | 0 | 0 |
-| **Total** | **18** | **0** | **0** | **0** |
+## Hallazgos de implementación
 
-> Los contadores reflejan la ejecución real (actualmente 0/18). Las predicciones estáticas anteriores no cuentan como prueba. La URL /api/v1 establecida por la guía no coincide con los mappings de sysventas (/api), y ambos servicios locales están apagados.
+- El selector de producto carga categorías desde `/api/categorias`, guarda `categoriaId` numérico y muestra las activas. En edición conserva la categoría asignada aunque esté inactiva, pero bloquea el guardado hasta seleccionar una activa.
+- El backend verifica la categoría en altas y cambios, rechaza categorías inactivas con 409 y devuelve 404 para categorías inexistentes.
+- El backend rechaza nombres repetidos sin distinguir mayúsculas, valida nombre (3–150), precio (mínimo 0.01), stock (entero no negativo) y categoría positiva.
+- La baja de producto es lógica. Intentar dar de baja un producto inactivo nuevamente produce 409.
+- La categoría no se puede eliminar mientras tenga productos asociados, incluso si estos están inactivos. Tampoco se puede desactivar mientras tenga productos activos.
+- El filtro por categoría es local y se aplica únicamente al contenido de la página que llegó del backend. Si no aparece un producto, hay que cambiar de página o tamaño.
+
+Estos hallazgos describen el comportamiento implementado en código y compilado. No son resultados HTTP observados; las respuestas reales se completan después de ejecutar los casos y adjuntar las capturas.
