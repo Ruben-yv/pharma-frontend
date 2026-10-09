@@ -25,10 +25,8 @@
     </label>
   </div>
 
-  @if (filtroDesdeCategoria()) {
-    <p class="nota-filtro">
-      Mostrando productos de la categoría {{ nombreCategoriaFiltro() }} en los primeros {{ tamanio() }} registros.
-    </p>
+  @if (categoriaFiltro() !== null) {
+    <p class="nota-filtro">El filtro por categoría se aplica a los productos de esta página.</p>
   }
 
   @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }

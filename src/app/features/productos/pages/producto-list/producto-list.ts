@@ -25,53 +25,22 @@ export class ProductoList implements OnInit {
   protected readonly tamanio = signal(10);
   protected readonly ordenarPor = signal<OrdenProducto>('nombre');
   protected readonly direccion = signal<Direccion>('asc');
-  private readonly productosApi = signal<Producto[]>([]);
-  protected readonly resultado = computed<PaginaResponse<Producto> | null>(() => {
-    const categoriaId = this.categoriaFiltro();
-    const orden = this.ordenarPor();
-    const multiplicador = this.direccion() === 'asc' ? 1 : -1;
-    const filtrados = this.productosApi()
-      .filter((producto) => categoriaId === null || producto.categoriaId === categoriaId)
-      .sort((a, b) => {
-        const comparacion = orden === 'nombre'
-          ? a.nombre.localeCompare(b.nombre, 'es')
-          : a[orden] - b[orden];
-        return comparacion * multiplicador;
-      });
-    const tamanio = this.tamanio();
-    const totalElementos = filtrados.length;
-    const totalPaginas = Math.max(1, Math.ceil(totalElementos / tamanio));
-    const pagina = Math.min(this.pagina(), totalPaginas - 1);
-    const inicio = pagina * tamanio;
-
-    return {
-      contenido: filtrados.slice(inicio, inicio + tamanio),
-      pagina,
-      tamanio,
-      totalElementos,
-      totalPaginas,
-      ultima: pagina >= totalPaginas - 1,
-    };
-  });
+  protected readonly resultado = signal<PaginaResponse<Producto> | null>(null);
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly categoriaFiltro = signal<number | null>(null);
-  protected readonly filtroDesdeCategoria = signal(false);
-  protected readonly nombreCategoriaFiltro = computed(() => {
-    const id = this.categoriaFiltro();
-    if (id === null) return '';
-    return this.categorias().find((categoria) => categoria.id === id)?.nombre ?? `ID ${id}`;
-  });
   protected readonly cargando = signal(false);
   protected readonly error = signal<string | null>(null);
-  protected readonly productos = computed(() => this.resultado()?.contenido ?? []);
+  protected readonly productos = computed(() => {
+    const id = this.categoriaFiltro();
+    const contenido = this.resultado()?.contenido ?? [];
+    return id === null ? contenido : contenido.filter((producto) => producto.categoriaId === id);
+  });
 
   ngOnInit(): void {
     const queryCategoriaId = this.categoriaId();
     const categoriaId = Number(queryCategoriaId);
     if (queryCategoriaId && Number.isInteger(categoriaId) && categoriaId > 0) {
       this.categoriaFiltro.set(categoriaId);
-      this.tamanio.set(100);
-      this.filtroDesdeCategoria.set(true);
     }
 
     this.categoriaService.listar().subscribe({
@@ -84,9 +53,9 @@ export class ProductoList implements OnInit {
   cargar(): void {
     this.cargando.set(true);
     this.error.set(null);
-    this.productoService.listar().subscribe({
-      next: (productos) => {
-        this.productosApi.set(productos);
+    this.productoService.listar(this.pagina(), this.tamanio(), this.ordenarPor(), this.direccion()).subscribe({
+      next: (pagina) => {
+        this.resultado.set(pagina);
         this.cargando.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -98,11 +67,12 @@ export class ProductoList implements OnInit {
 
   irA(pagina: number): void {
     this.pagina.set(pagina);
+    this.cargar();
   }
 
   cambiarTamanio(valor: string): void {
     this.tamanio.set(Number(valor));
-    this.pagina.set(0);
+    this.irA(0);
   }
 
   ordenar(campo: OrdenProducto): void {
@@ -112,12 +82,11 @@ export class ProductoList implements OnInit {
       this.ordenarPor.set(campo);
       this.direccion.set('asc');
     }
-    this.pagina.set(0);
+    this.irA(0);
   }
 
   filtrarPorCategoria(valor: string): void {
     this.categoriaFiltro.set(valor ? Number(valor) : null);
-    this.pagina.set(0);
   }
 
   darDeBaja(producto: Producto): void {
