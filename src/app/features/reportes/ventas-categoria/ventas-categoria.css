@@ -1,0 +1,10 @@
+.filtros { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; margin-bottom: 16px; }
+.filtros label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; }
+.acciones { display: flex; gap: 8px; }
+.resumen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.resumen article { display: flex; flex-direction: column; gap: 8px; }
+.resumen span { color: #64748b; font-size: 14px; }
+.resumen strong { color: #0f2e5c; font-size: 22px; }
+.monto { text-align: right; white-space: nowrap; }
+.vacio { text-align: center; padding: 24px; color: #64748b; }
+@media (max-width: 700px) { .filtros, .resumen { grid-template-columns: 1fr; } }

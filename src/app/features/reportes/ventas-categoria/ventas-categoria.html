@@ -1,0 +1,10 @@
+<section class="page">
+  <header class="page-header"><h2>Reporte de ventas por categoría</h2><button class="btn no-imprimir" type="button" [disabled]="!datos().length" (click)="imprimir()">🖨 Imprimir reporte</button></header>
+  <p class="solo-impresion">PharmaSoft · Reporte de ventas por categoría</p>
+  <form class="card filtros no-imprimir" [formGroup]="filtros" (ngSubmit)="buscar()"><label>Desde<input class="input" type="date" formControlName="desde" /></label><label>Hasta<input class="input" type="date" formControlName="hasta" /></label><div class="acciones"><button class="btn" type="button" (click)="limpiar()">Limpiar</button><button class="btn btn-primary" type="submit">Consultar</button></div></form>
+  @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
+  @if (cargando()) { <p>Consultando reporte…</p> } @else {
+    <div class="resumen"><article class="card"><span>Importe vendido</span><strong>{{ total() | currency: 'PEN' : 'S/ ' }}</strong></article><article class="card"><span>Unidades vendidas</span><strong>{{ unidades() }}</strong></article><article class="card"><span>Categorías</span><strong>{{ datos().length }}</strong></article></div>
+    <table class="tabla"><thead><tr><th>Categoría</th><th class="monto">Unidades vendidas</th><th class="monto">Importe total</th></tr></thead><tbody>@for (r of datos(); track r.categoriaId) { <tr><td>{{ r.categoriaNombre }}</td><td class="monto">{{ r.cantidadVendida }}</td><td class="monto">{{ r.montoTotal | currency: 'PEN' : 'S/ ' }}</td></tr> } @empty { <tr><td colspan="3" class="vacio">No hay ventas registradas en el período.</td></tr> }</tbody></table>
+  }
+</section>
