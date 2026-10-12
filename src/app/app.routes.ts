@@ -30,7 +30,8 @@ export const routes: Routes = [
         loadChildren: () => import('./features/ventas/ventas.routes').then((m) => m.VENTAS_ROUTES),
       },
       {
-        path: 'reportes',
+        path: 'reportes/ventas-por-categoria',
+        title: 'Ventas por categoría',
         loadComponent: () => import('./features/reportes/ventas-categoria/ventas-categoria').then((m) => m.VentasCategoria),
       },
     ],

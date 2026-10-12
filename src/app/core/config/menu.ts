@@ -10,5 +10,5 @@ export const MENU: MenuItem[] = [
   { etiqueta: 'Productos', ruta: '/productos', icono: '💊' },
   { etiqueta: 'Clientes', ruta: '/clientes', icono: '👥' },
   { etiqueta: 'Ventas', ruta: '/ventas', icono: '🧾' },
-  { etiqueta: 'Reporte por categoría', ruta: '/reportes', icono: '📊' },
+  { etiqueta: 'Reporte por categoría', ruta: '/reportes/ventas-por-categoria', icono: '📊' },
 ];
