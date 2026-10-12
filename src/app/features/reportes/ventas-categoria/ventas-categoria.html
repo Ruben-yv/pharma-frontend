@@ -1,0 +1,48 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <h2>Reporte de ventas por categoría</h2>
+      <p>Compara las unidades y el importe vendido por categoría en el periodo seleccionado.</p>
+    </div>
+    <button class="btn no-imprimir" type="button" [disabled]="!datos().length" (click)="imprimir()">🖨 Imprimir</button>
+  </header>
+
+  <p class="solo-impresion">PharmaSoft · Reporte de ventas por categoría</p>
+
+  <form class="card filtros no-imprimir" [formGroup]="filtros" (ngSubmit)="generar()">
+    <label>Desde<input class="input" type="date" formControlName="desde" /></label>
+    <label>Hasta<input class="input" type="date" formControlName="hasta" /></label>
+    <div class="acciones">
+      <button class="btn" type="button" (click)="limpiar()">Limpiar</button>
+      <button class="btn btn-primary" type="submit" [disabled]="cargando()">Generar reporte</button>
+    </div>
+  </form>
+
+  @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
+  @if (cargando()) {
+    <p class="estado" role="status">Cargando reporte…</p>
+  } @else if (!error() && datos().length === 0) {
+    <div class="card vacio" role="status">No hay ventas en el periodo seleccionado.</div>
+  } @else if (datos().length > 0) {
+    <div class="card tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr><th>Categoría</th><th class="monto">Unidades vendidas</th><th>Comparación de importe</th><th class="monto">Importe total</th></tr>
+        </thead>
+        <tbody>
+          @for (fila of datos(); track fila.categoriaId) {
+            <tr>
+              <td>{{ fila.categoriaNombre }}</td>
+              <td class="monto">{{ fila.cantidadVendida }}</td>
+              <td><div class="barra-fondo" [attr.aria-label]="'Importe ' + (fila.montoTotal | currency: 'PEN' : 'S/ ')" role="img"><span class="barra" [style.width.%]="anchoBarra(fila.montoTotal)"></span></div></td>
+              <td class="monto">{{ fila.montoTotal | currency: 'PEN' : 'S/ ' }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr><th>Total</th><th class="monto">{{ unidades() }}</th><th></th><th class="monto">{{ total() | currency: 'PEN' : 'S/ ' }}</th></tr>
+        </tfoot>
+      </table>
+    </div>
+  }
+</section>

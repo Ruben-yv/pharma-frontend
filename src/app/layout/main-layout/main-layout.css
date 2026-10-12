@@ -18,3 +18,8 @@
   .shell:not(.colapsado) .area-sidebar { visibility: visible; }
   .area-main { padding: 18px 14px; }
 }
+@media print {
+  .shell { display: block; min-height: 0; }
+  .area-header, .area-sidebar { display: none !important; }
+  .area-main { padding: 0; background: #fff; }
+}
