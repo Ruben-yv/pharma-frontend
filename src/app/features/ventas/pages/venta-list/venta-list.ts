@@ -5,12 +5,13 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 import { mensajeError } from '../../../../core/utils/http-error';
+import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Cliente } from '../../../clientes/models/cliente.model';
 import { ClienteService } from '../../../clientes/services/cliente-service';
 import { EstadoVenta, FiltroVentas, Venta } from '../../models/venta.model';
 import { VentaService } from '../../services/venta-service';
 
-@Component({ selector: 'app-venta-list', imports: [ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe], templateUrl: './venta-list.html', styleUrl: './venta-list.css' })
+@Component({ selector: 'app-venta-list', imports: [ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe, SiPermiso], templateUrl: './venta-list.html', styleUrl: './venta-list.css' })
 export class VentaList implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly ventaService = inject(VentaService);

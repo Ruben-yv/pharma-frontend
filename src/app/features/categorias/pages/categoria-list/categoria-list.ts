@@ -4,11 +4,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CategoriaService } from '../../services/categoria-service';
 import { Categoria } from '../../models/categoria.model';
 import { mensajeError } from '../../../../core/utils/http-error';
+import { SiPermiso } from '../../../../shared/directives/si-permiso';
 
 @Component({
   selector: 'app-categoria-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, SiPermiso],
   templateUrl: './categoria-list.html',
   styleUrl: './categoria-list.css'
 })

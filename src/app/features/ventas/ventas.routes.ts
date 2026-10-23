@@ -1,7 +1,13 @@
 import { Routes } from '@angular/router';
-
+import { permisoGuard } from '../../core/guards/permiso-guard';
+import { VentaList } from './pages/venta-list/venta-list';
+import { VentaForm } from './pages/venta-form/venta-form';
+import { VentaDetalle } from './pages/venta-detalle/venta-detalle';
 export const VENTAS_ROUTES: Routes = [
-  { path: '', loadComponent: () => import('./pages/venta-list/venta-list').then((m) => m.VentaList), title: 'Consulta de ventas' },
-  { path: 'nueva', loadComponent: () => import('./pages/venta-form/venta-form').then((m) => m.VentaForm), title: 'Nueva venta' },
-  { path: ':id', loadComponent: () => import('./pages/venta-detalle/venta-detalle').then((m) => m.VentaDetalle), title: 'Comprobante de venta' },
+  { path: '', component: VentaList, title: 'Consulta de ventas' },
+  {
+    path: 'nueva', component: VentaForm, title: 'Nueva venta',
+    canActivate: [permisoGuard], data: { permiso: 'VENTAS_REGISTRAR' },
+  },
+  { path: ':id', component: VentaDetalle, title: 'Detalle de venta' },
 ];

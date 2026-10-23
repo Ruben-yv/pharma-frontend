@@ -1,7 +1,7 @@
 <section class="categories-page">
   <header class="page-header">
     <h1>Categorías</h1>
-    <a class="button button-primary" routerLink="/categorias/nuevo"><span aria-hidden="true">＋</span> Nueva categoría</a>
+    <a *appSiPermiso="'CATALOGO_ESCRIBIR'" class="button button-primary" routerLink="/categorias/nuevo"><span aria-hidden="true">＋</span> Nueva categoría</a>
   </header>
 
   @if (errorMsg()) {
@@ -36,7 +36,7 @@
             <th scope="col">Nombre</th>
             <th scope="col">Descripción</th>
             <th scope="col">Estado</th>
-            <th scope="col">Acciones</th>
+            <th *appSiPermiso="'CATALOGO_ESCRIBIR'" scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@
                   {{ categoria.estado === false ? 'Inactivo' : 'Activo' }}
                 </span>
               </td>
-              <td>
+              <td *appSiPermiso="'CATALOGO_ESCRIBIR'">
                 <div class="row-actions">
                   <a class="button button-outline" [routerLink]="'/productos'" [queryParams]="{ categoriaId: categoria.id }">
                     Ver productos
