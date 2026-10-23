@@ -1,7 +1,7 @@
 <section class="page">
   <header class="page-header">
     <h2>Productos</h2>
-    <a routerLink="nuevo" class="btn btn-primary">+ Nuevo producto</a>
+    <a *appSiPermiso="'CATALOGO_ESCRIBIR'" routerLink="nuevo" class="btn btn-primary">+ Nuevo producto</a>
   </header>
 
   <div class="filtros">
@@ -42,7 +42,7 @@
             <th><button type="button" class="orden" (click)="ordenar('precio')">Precio</button></th>
             <th><button type="button" class="orden" (click)="ordenar('stock')">Stock</button></th>
             <th>Estado</th>
-            <th>Acciones</th>
+            <th *appSiPermiso="'CATALOGO_ESCRIBIR'">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@
               <td>{{ producto.precio | currency: 'PEN' : 'S/ ' }}</td>
               <td>{{ producto.stock }}</td>
               <td><span class="badge" [class.inactivo]="!producto.estado">{{ producto.estado ? 'Activo' : 'Inactivo' }}</span></td>
-              <td class="acciones">
+              <td *appSiPermiso="'CATALOGO_ESCRIBIR'" class="acciones">
                 <a [routerLink]="[producto.id, 'editar']" class="btn">Editar</a>
                 <button type="button" class="btn btn-peligro" [disabled]="!producto.estado" (click)="darDeBaja(producto)">Dar de baja</button>
               </td>

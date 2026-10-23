@@ -4,6 +4,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { RouterLink } from '@angular/router';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 import { mensajeError } from '../../../../core/utils/http-error';
+import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Categoria } from '../../../categorias/models/categoria.model';
 import { CategoriaService } from '../../../categorias/services/categoria-service';
 import { Direccion, OrdenProducto, Producto } from '../../models/producto.model';
@@ -11,7 +12,7 @@ import { ProductoService } from '../../services/producto-service';
 
 @Component({
   selector: 'app-producto-list',
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, SiPermiso],
   templateUrl: './producto-list.html',
   styleUrl: './producto-list.css',
 })
