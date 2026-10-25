@@ -34,3 +34,18 @@ export interface Sesion {
   permisos: Permiso[];
 }
 
+/** Perfil del usuario devuelto por GET /auth/me. */
+export interface PerfilUsuario {
+  id: number;
+  username: string;
+  empleadoId: number;
+  /** El backend actual usa empleadoNombre; nombreCompleto queda como compatibilidad. */
+  empleadoNombre?: string;
+  nombreCompleto?: string;
+  cargo?: string;
+  roles: string[];
+  permisos: Permiso[];
+  estado?: boolean;
+  fechaCreacion?: string;
+}
+

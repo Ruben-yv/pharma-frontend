@@ -1,0 +1,9 @@
+@if (auth.porVencer() && !auth.avisoOculto()) {
+  <section class="aviso-sesion" role="status" aria-live="polite">
+    <p>⚠ Su sesión vence en <strong>{{ cuentaRegresiva() }}</strong>.</p>
+    <div class="acciones">
+      <button type="button" class="btn-cerrar" (click)="cerrarSesion()">Cerrar sesión ahora</button>
+      <button type="button" class="btn-ocultar" aria-label="Ocultar aviso de expiración" (click)="ocultar()">×</button>
+    </div>
+  </section>
+}

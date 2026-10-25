@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, Permiso, Sesion } from './auth.model';
+import { LoginRequest, LoginResponse, PerfilUsuario, Permiso, Sesion } from './auth.model';
 /** Clave con la que se guarda la sesión en sessionStorage. */
 const CLAVE_SESION = 'pharmasoft.sesion';
 /**
@@ -21,13 +21,16 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly url = `${environment.apiUrl}/v1/auth`;
   private readonly sesionActual = signal<Sesion | null>(this.leerSesionGuardada());
-  private temporizador?: ReturnType<typeof setTimeout>;
+  private temporizador?: ReturnType<typeof setInterval>;
   readonly sesion = this.sesionActual.asReadonly();
   readonly autenticado = computed(() => this.sesionActual() !== null);
+  readonly segundosRestantes = signal(0);
+  readonly porVencer = computed(() => this.sesionActual() !== null && this.segundosRestantes() <= 120);
+  readonly avisoOculto = signal(false);
 
   constructor() {
     const sesion = this.sesionActual();
-    if (sesion) this.programarExpiracion(sesion);
+    if (sesion) this.iniciarTemporizador(sesion);
   }
 
   /** Envía las credenciales; si son correctas, guarda la sesión. */
@@ -45,15 +48,22 @@ export class AuthService {
     );
   }
 
+  /** Consulta los datos y permisos vigentes del usuario en el backend. */
+  obtenerPerfil(): Observable<PerfilUsuario> {
+    return this.http.get<PerfilUsuario>(`${this.url}/me`);
+  }
+
   /**
    * Cierra la sesión y vuelve al login.
    * Si la causa es la expiración, el login lo avisa y, tras entrar de nuevo,
    * regresa a la página donde estaba el usuario.
    */
   cerrarSesion(motivo?: 'expirada', volverA?: string): void {
-    clearTimeout(this.temporizador);
+    this.detenerTemporizador();
     sessionStorage.removeItem(CLAVE_SESION);
     this.sesionActual.set(null);
+    this.segundosRestantes.set(0);
+    this.avisoOculto.set(false);
     const queryParams: Record<string, string> = {};
     if (motivo) queryParams['expirada'] = '1';
     if (volverA && volverA !== '/login') queryParams['returnUrl'] = volverA;
@@ -74,16 +84,39 @@ export class AuthService {
   private iniciar(sesion: Sesion): void {
     sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
     this.sesionActual.set(sesion);
-    this.programarExpiracion(sesion);
+    this.avisoOculto.set(false);
+    this.iniciarTemporizador(sesion);
   }
 
-  private programarExpiracion(sesion: Sesion): void {
-    clearTimeout(this.temporizador);
-    const restante = sesion.expiraEn - Date.now();
-    this.temporizador = setTimeout(
-      () => this.cerrarSesion('expirada', this.router.url),
-      Math.max(restante, 0),
-    );
+  ocultarAviso(): void {
+    this.avisoOculto.set(true);
+  }
+
+  private iniciarTemporizador(sesion: Sesion): void {
+    this.detenerTemporizador();
+    this.actualizarSegundosRestantes(sesion);
+    this.temporizador = setInterval(() => {
+      const actual = this.sesionActual();
+      if (!actual) {
+        this.detenerTemporizador();
+        return;
+      }
+      this.actualizarSegundosRestantes(actual);
+      if (this.segundosRestantes() === 0) {
+        this.cerrarSesion('expirada', this.router.url);
+      }
+    }, 1000);
+  }
+
+  private actualizarSegundosRestantes(sesion: Sesion): void {
+    this.segundosRestantes.set(Math.max(0, Math.floor((sesion.expiraEn - Date.now()) / 1000)));
+  }
+
+  private detenerTemporizador(): void {
+    if (this.temporizador !== undefined) {
+      clearInterval(this.temporizador);
+      this.temporizador = undefined;
+    }
   }
 
   /** Recupera la sesión tras recargar la página; descarta la vencida o dañada. */
