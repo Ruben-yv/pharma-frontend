@@ -24,6 +24,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/inicio/inicio').then(m => m.Inicio),
       },
       {
+        path: 'mi-cuenta',
+        title: 'Mi cuenta',
+        loadComponent: () => import('./features/auth/pages/mi-cuenta/mi-cuenta').then(m => m.MiCuenta),
+      },
+      {
         path: 'categorias',
         canActivate: [permisoGuard],
         data: { permiso: 'CATALOGO_LEER' },

@@ -1,0 +1,75 @@
+<section class="page mi-cuenta" aria-labelledby="titulo-mi-cuenta">
+  <header class="page-header">
+    <div>
+      <h1 id="titulo-mi-cuenta">Mi cuenta</h1>
+      <p>Consulta tu identidad y los permisos vigentes que devuelve PharmaBackend.</p>
+    </div>
+  </header>
+
+  @if (cargando()) {
+    <p class="estado" role="status">Cargando los datos de tu cuenta…</p>
+  }
+
+  @if (error()) {
+    <div class="alerta error" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="btn" (click)="cargarPerfil()">Reintentar</button>
+    </div>
+  }
+
+  @if (permisosDifieren()) {
+    <div class="alerta aviso" role="status">
+      Sus permisos cambiaron. Cierre sesión y vuelva a ingresar para actualizarlos.
+    </div>
+  }
+
+  @if (perfil(); as cuenta) {
+    <article class="card identidad">
+      <div>
+        <span class="etiqueta">Nombre completo</span>
+        <strong>{{ nombreCompleto(cuenta) }}</strong>
+      </div>
+      <div>
+        <span class="etiqueta">Usuario</span>
+        <strong>{{ cuenta.username }}</strong>
+      </div>
+      @if (cuenta.cargo) {
+        <div>
+          <span class="etiqueta">Cargo</span>
+          <strong>{{ cuenta.cargo }}</strong>
+        </div>
+      }
+      <div class="roles">
+        <span class="etiqueta">Roles</span>
+        <div class="etiquetas">
+          @for (rol of cuenta.roles; track rol) {
+            <span class="etiqueta-rol">{{ rol }}</span>
+          }
+        </div>
+      </div>
+    </article>
+
+    <section class="permisos" aria-labelledby="titulo-permisos">
+      <h2 id="titulo-permisos">Permisos por módulo</h2>
+      <p class="ayuda">La marca indica si el backend concede actualmente cada permiso a tu cuenta.</p>
+      <div class="grupos">
+        @for (grupo of grupos; track grupo.modulo) {
+          <article class="card grupo">
+            <h3>{{ grupo.modulo }}</h3>
+            <ul>
+              @for (permiso of grupo.permisos; track permiso) {
+                <li>
+                  <span class="marca-permiso" [class.concedido]="tienePermiso(permiso)"
+                        [attr.aria-label]="tienePermiso(permiso) ? 'Concedido' : 'No concedido'">
+                    {{ tienePermiso(permiso) ? '✔' : '✘' }}
+                  </span>
+                  <code>{{ permiso }}</code>
+                </li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</section>

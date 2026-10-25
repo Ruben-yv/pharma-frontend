@@ -1,0 +1,22 @@
+.page-header { margin-bottom: 18px; }
+.page-header h1 { margin: 0 0 6px; color: #0f2e5c; }
+.page-header p, .ayuda { margin: 0; color: #526174; }
+.identidad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; margin-bottom: 26px; }
+.identidad > div { display: flex; flex-direction: column; gap: 5px; }
+.etiqueta { color: #66758a; font-size: 13px; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 7px; }
+.etiqueta-rol { padding: 4px 10px; border-radius: 999px; background: #e7eef8; color: #17365d; font-size: 13px; font-weight: 600; }
+.permisos h2 { margin: 0 0 5px; color: #0f2e5c; }
+.ayuda { margin-bottom: 14px; }
+.grupos { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.grupo h3 { margin: 0 0 10px; color: #17365d; }
+.grupo ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.grupo li { display: flex; align-items: center; gap: 8px; }
+.marca-permiso { display: inline-grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; background: #fde8e7; color: #a4261a; font-weight: 700; }
+.marca-permiso.concedido { background: #ddf5e7; color: #14763c; }
+.grupo code { color: #263445; font-size: 12px; overflow-wrap: anywhere; }
+.estado { color: #526174; }
+.alerta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px; padding: 12px 14px; border-radius: 8px; }
+.alerta.error { background: #fff0ef; color: #9b231b; }
+.alerta.aviso { background: #fff7dc; color: #674d00; }
+@media (max-width: 560px) { .identidad { grid-template-columns: 1fr; } }
