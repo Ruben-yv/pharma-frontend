@@ -8,7 +8,7 @@ import { Cliente, ClienteRequest } from '../models/cliente.model';
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/v1/clientes`;
+  private readonly url = `${environment.apiUrl}/clientes`;
 
   listar(pagina = 0, tamanio = 10, ordenarPor = 'apellidos', direccion: 'asc' | 'desc' = 'asc'):
     Observable<PaginaResponse<Cliente> | Cliente[]> {

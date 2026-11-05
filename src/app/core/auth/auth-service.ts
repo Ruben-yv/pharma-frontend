@@ -19,7 +19,7 @@ const CLAVE_SESION = 'pharmasoft.sesion';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly url = `${environment.apiUrl}/v1/auth`;
+  private readonly url = `${environment.apiUrl}/auth`;
   private readonly sesionActual = signal<Sesion | null>(this.leerSesionGuardada());
   private temporizador?: ReturnType<typeof setInterval>;
   readonly sesion = this.sesionActual.asReadonly();
