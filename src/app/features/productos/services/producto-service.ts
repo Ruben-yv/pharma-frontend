@@ -8,7 +8,7 @@ import { Direccion, OrdenProducto, Producto, ProductoRequest } from '../models/p
 @Injectable({ providedIn: 'root' })
 export class ProductoService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/v1/productos`;
+  private readonly url = `${environment.apiUrl}/productos`;
 
   listar(pagina: number, tamanio: number, ordenarPor: OrdenProducto, direccion: Direccion): Observable<PaginaResponse<Producto>> {
     const params = new HttpParams()

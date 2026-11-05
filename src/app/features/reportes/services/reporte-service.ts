@@ -7,7 +7,7 @@ import { VentaPorCategoria } from '../models/reporte.model';
 @Injectable({ providedIn: 'root' })
 export class ReporteService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/v1/reportes`;
+  private readonly url = `${environment.apiUrl}/reportes`;
 
   ventasPorCategoria(desde: string, hasta: string): Observable<VentaPorCategoria[]> {
     let params = new HttpParams();

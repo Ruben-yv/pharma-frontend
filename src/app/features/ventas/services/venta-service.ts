@@ -8,7 +8,7 @@ import { FiltroVentas, Venta, VentaRequest } from '../models/venta.model';
 @Injectable({ providedIn: 'root' })
 export class VentaService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/v1/ventas`;
+  private readonly url = `${environment.apiUrl}/ventas`;
 
   registrar(dto: VentaRequest): Observable<Venta> { return this.http.post<Venta>(this.url, dto); }
   obtener(id: number): Observable<Venta> { return this.http.get<Venta>(`${this.url}/${id}`); }

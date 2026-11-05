@@ -1,0 +1,27 @@
+<section class="card">
+  <h3>Productos más vendidos</h3>
+  <div class="tabla-productos">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Cantidad</th>
+          <th class="monto">Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (fila of filas(); track fila.productoId) {
+          <tr>
+            <td>{{ fila.productoNombre }}</td>
+            <td>{{ fila.categoriaNombre }}</td>
+            <td>{{ fila.cantidadVendida }}</td>
+            <td class="monto">{{ fila.montoTotal | currency: 'PEN' : 'S/ ' }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4">Aún no hay ventas registradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
