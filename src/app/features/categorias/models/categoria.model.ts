@@ -5,6 +5,8 @@ export interface Categoria {
   estado: boolean;
   fechaCreacion: string;
   fechaModificacion: string | null;
+  creadoPor: string | null;
+  modificadoPor: string | null;
 }
 
 export interface CategoriaRequest {

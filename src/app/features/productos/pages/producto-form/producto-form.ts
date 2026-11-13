@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs';
 import { erroresDeValidacion, mensajeError } from '../../../../core/utils/http-error';
 import { Categoria } from '../../../categorias/models/categoria.model';
 import { CategoriaService } from '../../../categorias/services/categoria-service';
-import { ProductoRequest } from '../../models/producto.model';
+import { Producto, ProductoRequest } from '../../models/producto.model';
 import { ProductoService } from '../../services/producto-service';
 
 @Component({
@@ -25,6 +25,7 @@ export class ProductoForm implements OnInit {
   readonly id = input<string>();
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly categoriaOriginal = signal<number | null>(null);
+  protected readonly productoOriginal = signal<Producto | null>(null);
   protected readonly cargando = signal(true);
   protected readonly guardando = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -61,6 +62,7 @@ export class ProductoForm implements OnInit {
         next: ({ categorias, producto }) => {
           this.categorias.set(categorias);
           this.categoriaOriginal.set(producto.categoriaId);
+          this.productoOriginal.set(producto);
           this.form.setValue({
             nombre: producto.nombre,
             precio: producto.precio,

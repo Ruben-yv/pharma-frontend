@@ -16,6 +16,7 @@ export interface Venta {
   clienteNombre: string;
   estado: EstadoVenta;
   total: number;
+  creadoPor: string | null;
   detalles: DetalleVenta[];
 }
 
