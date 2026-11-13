@@ -1,5 +1,11 @@
 <section class="page">
   <h2>{{ esEdicion() ? 'Editar producto' : 'Nuevo producto' }}</h2>
+  @if (productoOriginal(); as producto) {
+    <p class="nota-auditoria">
+      Creado por: {{ producto.creadoPor || 'No registrado' }}
+      · Modificado por: {{ producto.modificadoPor || 'No registrado' }}
+    </p>
+  }
 
   @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
   @if (cargando()) {

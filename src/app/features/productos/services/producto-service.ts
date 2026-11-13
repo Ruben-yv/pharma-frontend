@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { PaginaResponse } from '../../../core/models/pagina-response';
+import { ConsultaPagina, PaginaResponse } from '../../../core/models/pagina-response';
 import { Direccion, OrdenProducto, Producto, ProductoRequest } from '../models/producto.model';
 
 @Injectable({ providedIn: 'root' })
@@ -10,12 +10,12 @@ export class ProductoService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/productos`;
 
-  listar(pagina: number, tamanio: number, ordenarPor: OrdenProducto, direccion: Direccion): Observable<PaginaResponse<Producto>> {
+  listar(consulta: ConsultaPagina): Observable<PaginaResponse<Producto>> {
     const params = new HttpParams()
-      .set('pagina', pagina)
-      .set('tamanio', tamanio)
-      .set('ordenarPor', ordenarPor)
-      .set('direccion', direccion);
+      .set('pagina', consulta.pagina)
+      .set('tamanio', consulta.tamanio)
+      .set('ordenarPor', consulta.ordenarPor)
+      .set('direccion', consulta.direccion);
     return this.http.get<PaginaResponse<Producto>>(this.url, { params });
   }
 

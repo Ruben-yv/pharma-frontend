@@ -1,6 +1,6 @@
 <section class="page">
   <header class="page-header">
-    <h2>Productos</h2>
+    <h2>Catálogo de productos</h2>
     <a *appSiPermiso="'CATALOGO_ESCRIBIR'" routerLink="nuevo" class="btn btn-primary">+ Nuevo producto</a>
   </header>
 
@@ -14,15 +14,6 @@
         }
       </select>
     </label>
-    <label>
-      Por página
-      <select class="input" [value]="tamanio()" (change)="cambiarTamanio($any($event.target).value)">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-      </select>
-    </label>
   </div>
 
   @if (categoriaFiltro() !== null) {
@@ -30,11 +21,14 @@
   }
 
   @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
-  @if (cargando()) {
+  @if (cargando() && !pag()) {
     <p role="status">Cargando productos…</p>
-  } @else {
+  }
+
+  @if (pag(); as r) {
+    @if (cargando()) { <p role="status">Actualizando productos…</p> }
     <div class="tabla-productos">
-      <table class="tabla">
+      <table class="tabla" data-testid="tabla-productos">
         <thead>
           <tr>
             <th><button type="button" class="orden" (click)="ordenar('nombre')">Nombre</button></th>
@@ -46,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (producto of productos(); track producto.id) {
+          @for (producto of productosFiltrados(); track producto.id) {
             <tr>
               <td>{{ producto.nombre }}</td>
               <td><span class="chip">{{ producto.categoriaNombre }}</span></td>
@@ -64,12 +58,13 @@
         </tbody>
       </table>
     </div>
-    @if (resultado(); as r) {
-      <footer class="paginador">
-        <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} · {{ r.totalElementos }} productos</span>
-        <button type="button" class="btn" [disabled]="r.pagina === 0" (click)="irA(r.pagina - 1)">Anterior</button>
-        <button type="button" class="btn" [disabled]="r.ultima" (click)="irA(r.pagina + 1)">Siguiente</button>
-      </footer>
-    }
+
+    <app-paginador
+      [pagina]="r.pagina"
+      [totalPaginas]="r.totalPaginas"
+      [totalElementos]="r.totalElementos"
+      [tamanio]="r.tamanio"
+      (cambioPagina)="irA($event)"
+      (cambioTamanio)="cambiarTamanio($event)" />
   }
 </section>

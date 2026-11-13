@@ -8,6 +8,8 @@ export interface Producto {
   categoriaNombre: string;
   fechaCreacion: string;
   fechaModificacion: string | null;
+  creadoPor: string | null;
+  modificadoPor: string | null;
 }
 
 export interface ProductoRequest {

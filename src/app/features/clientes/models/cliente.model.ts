@@ -9,6 +9,8 @@ export interface Cliente {
   estado: boolean;
   fechaCreacion: string;
   fechaModificacion: string | null;
+  creadoPor: string | null;
+  modificadoPor: string | null;
 }
 
 export interface ClienteRequest {

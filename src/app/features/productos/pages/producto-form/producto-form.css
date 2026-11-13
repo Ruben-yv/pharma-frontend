@@ -6,3 +6,4 @@ label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; }
 .aviso { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border-radius: 8px; background: #fff6dc; }
 .acciones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 @media (max-width: 560px) { .fila { grid-template-columns: 1fr; } .aviso { align-items: flex-start; flex-direction: column; } }
+.nota-auditoria { margin: -8px 0 16px; color: #5b6475; font-size: 13px; }

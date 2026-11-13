@@ -6,3 +6,11 @@ export interface PaginaResponse<T> {
   totalPaginas: number;
   ultima: boolean;
 }
+
+/** Parámetros compartidos para consultar listados paginados. */
+export interface ConsultaPagina {
+  pagina: number;
+  tamanio: number;
+  ordenarPor: string;
+  direccion: 'asc' | 'desc';
+}
