@@ -66,7 +66,7 @@ export class VentaForm implements OnInit {
   ngOnInit(): void {
     forkJoin({
       clientes: this.clienteService.listar(0, 100).pipe(map((r) => Array.isArray(r) ? r : r.contenido)),
-      productos: this.productoService.listar(0, 100, 'nombre', 'asc').pipe(map((r) => r.contenido)),
+      productos: this.productoService.listar({ pagina: 0, tamanio: 100, ordenarPor: 'nombre', direccion: 'asc' }).pipe(map((r) => r.contenido)),
     }).subscribe({
       next: ({ clientes, productos }) => {
         this.clientes.set(clientes.filter((c) => c.estado));

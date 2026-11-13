@@ -1,0 +1,28 @@
+.paginador {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.resumen {
+  margin-right: auto;
+  color: #5b6475;
+}
+
+.filas {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5b6475;
+}
+
+.filas select {
+  min-height: 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: white;
+  color: inherit;
+}
