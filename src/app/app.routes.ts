@@ -50,6 +50,13 @@ export const routes: Routes = [
           import('./features/ventas/ventas.routes').then(m => m.VENTAS_ROUTES),
       },
       {
+        path: 'auditoria',
+        title: 'Auditoría',
+        canActivate: [permisoGuard],
+        data: { permiso: 'USUARIOS_ADMINISTRAR' },
+        loadComponent: () => import('./features/auditoria/pages/auditoria-list/auditoria-list').then(m => m.AuditoriaList),
+      },
+      {
         path: 'acceso-denegado',
         title: 'Acceso denegado',
         loadComponent: () =>
@@ -64,4 +71,3 @@ export const routes: Routes = [
       import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado),
   },
 ];
-

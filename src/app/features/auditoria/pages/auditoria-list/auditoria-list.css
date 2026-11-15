@@ -1,0 +1,15 @@
+.filtros { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)) auto; align-items: end; gap: 12px; margin-bottom: 18px; }
+.filtros label { display: grid; gap: 6px; font-weight: 600; }
+.acciones { display: flex; gap: 8px; }
+.tabla-contenedor { overflow-x: auto; border-radius: 12px; background: #fff; }
+.tabla { width: 100%; border-collapse: collapse; }
+.tabla th, .tabla td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #e3e8f0; vertical-align: top; }
+.tabla thead { color: #fff; background: #0f2e5c; }
+.tabla th:first-child { border-top-left-radius: 10px; }
+.tabla th:last-child { border-top-right-radius: 10px; }
+.chip { display: inline-block; padding: 3px 9px; border-radius: 999px; background: #e9f0f9; color: #173c70; white-space: nowrap; }
+.detalle { min-width: 180px; max-width: 320px; overflow-wrap: anywhere; }
+code { font-size: 12px; }
+.vacio { padding: 28px; text-align: center !important; color: #687386; }
+@media (max-width: 900px) { .filtros { grid-template-columns: repeat(2, minmax(130px, 1fr)); } }
+@media (max-width: 520px) { .filtros { grid-template-columns: 1fr; } }
