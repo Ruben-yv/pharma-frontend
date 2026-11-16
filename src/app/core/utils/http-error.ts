@@ -7,7 +7,10 @@ export function mensajeError(err: HttpErrorResponse): string {
   }
 
   const cuerpo = err.error as ErrorResponse | null;
-  return cuerpo?.message ?? `Error ${err.status}: ${err.statusText}`;
+  const mensaje = cuerpo?.message ?? `Error ${err.status}: ${err.statusText}`;
+  return cuerpo?.requestId
+    ? `${mensaje} Código de seguimiento: ${cuerpo.requestId}`
+    : mensaje;
 }
 
 export function erroresDeValidacion(err: HttpErrorResponse): Record<string, string> {

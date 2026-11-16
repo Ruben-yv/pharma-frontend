@@ -186,6 +186,15 @@ test('el vendedor registra una venta y el catálogo refleja el stock descontado'
       .locator('tr', { hasText: producto!.nombre })
       .first();
     await expect(filaProducto).toContainText(String(stockAntes - 2));
+
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click();
+    await expect(page).toHaveURL(/\/login/);
+    await iniciarSesion(page, 'admin', '/auditoria?accion=VENTA_REGISTRADA');
+    const filaAuditoria = page.getByTestId('tabla-auditoria').locator('tbody tr', {
+      hasText: String(venta.id),
+    });
+    await expect(filaAuditoria).toContainText('VENTA_REGISTRADA');
+    await expect(filaAuditoria).toContainText(requestId);
   } finally {
     await actualizarProducto(request, token, producto!, stockOriginal, producto!.precio);
     await request.put(`${API_URL}/clientes/${cliente.id}`, {

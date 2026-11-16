@@ -1,0 +1,40 @@
+<section class="page">
+  <header class="page-header"><h2>Auditoría</h2></header>
+
+  <form class="card filtros" [formGroup]="filtros" (ngSubmit)="buscar()">
+    <label>Usuario<input class="input" formControlName="usuario" placeholder="Todos" /></label>
+    <label>Acción<input class="input" formControlName="accion" placeholder="Todas" /></label>
+    <label>Desde<input class="input" type="date" formControlName="desde" /></label>
+    <label>Hasta<input class="input" type="date" formControlName="hasta" /></label>
+    <div class="acciones">
+      <button type="button" class="btn" (click)="limpiar()">Limpiar</button>
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+  </form>
+
+  @if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
+  @if (cargando() && !pag()) { <p role="status">Cargando bitácora…</p> }
+
+  @if (pag(); as r) {
+    @if (cargando()) { <p role="status">Actualizando bitácora…</p> }
+    <div class="tabla-contenedor">
+      <table class="tabla" data-testid="tabla-auditoria">
+        <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>ID</th><th>Detalle</th><th>Request ID</th></tr></thead>
+        <tbody>
+          @for (evento of r.contenido; track evento.id) {
+            <tr>
+              <td>{{ evento.fecha | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td>{{ evento.usuario }}</td><td><span class="chip">{{ evento.accion }}</span></td>
+              <td>{{ evento.entidad }}</td><td>{{ evento.entidadId ?? '—' }}</td>
+              <td class="detalle">{{ evento.detalle || '—' }}</td><td><code>{{ evento.requestId || '—' }}</code></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="vacio">No hay eventos con esos filtros.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-paginador [pagina]="r.pagina" [totalPaginas]="r.totalPaginas" [totalElementos]="r.totalElementos"
+      [tamanio]="r.tamanio" (cambioPagina)="irA($event)" (cambioTamanio)="cambiarTamanio($event)" />
+  }
+</section>
