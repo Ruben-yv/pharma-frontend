@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard, invitadoGuard } from './core/guards/auth-guard';
 import { permisoGuard } from './core/guards/permiso-guard';
 export const routes: Routes = [
@@ -13,7 +12,8 @@ export const routes: Routes = [
 // Privadas: todo lo que cuelga del layout exige sesión
   {
     path: '',
-    component: MainLayout,
+    loadComponent: () =>
+      import('./layout/main-layout/main-layout').then((m) => m.MainLayout),
     canActivate: [authGuard],
     canActivateChild: [authGuard],
     children: [
@@ -71,3 +71,4 @@ export const routes: Routes = [
       import('./shared/pages/no-encontrado/no-encontrado').then(m => m.NoEncontrado),
   },
 ];
+

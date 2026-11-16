@@ -1,0 +1,37 @@
+{
+  "info": {
+    "_postman_id": "db640da3-09b4-4519-91b1-9f57f1709009",
+    "name": "PharmaSoft - Sesion 9 - Ventas y reportes",
+    "description": "Solicitudes para la matriz de la actividad autonoma. Configurar baseUrl y reemplazar los IDs 0 por datos de prueba antes de enviar. Las solicitudes POST registran ventas y pueden descontar stock.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api/v1" },
+    { "key": "clienteActivoId", "value": "1" },
+    { "key": "clienteInactivoId", "value": "2" },
+    { "key": "productoDisponibleId", "value": "47" },
+    { "key": "productoStockBajoId", "value": "8" },
+    { "key": "desde", "value": "2026-10-01" },
+    { "key": "hasta", "value": "2026-10-31" },
+    { "key": "ventaId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Reportes",
+      "item": [
+        { "name": "R-01 Reporte histórico por categoría", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/reportes/ventas-por-categoria", "description": "Reporte histórico sin filtros." }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));", "pm.test('La respuesta es un arreglo', () => pm.expect(pm.response.json()).to.be.an('array'));", "pm.test('Cada fila contiene los campos del reporte', () => pm.response.json().forEach(f => { pm.expect(f).to.have.all.keys('categoriaId','categoriaNombre','cantidadVendida','montoTotal'); }));"] } }] },
+        { "name": "R-02 Reporte por fechas", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/reportes/ventas-por-categoria?desde={{desde}}&hasta={{hasta}}" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));", "pm.test('La respuesta es un arreglo', () => pm.expect(pm.response.json()).to.be.an('array'));", "pm.test('Las fechas están definidas', () => { pm.expect(pm.variables.get('desde')).to.exist; pm.expect(pm.variables.get('hasta')).to.exist; });"] } }] },
+        { "name": "R-X01 Validar rango invertido en API", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/reportes/ventas-por-categoria?desde={{hasta}}&hasta={{desde}}" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('El API rechaza el rango invertido con 409', () => pm.response.to.have.status(409));", "pm.test('El mensaje identifica el rango invalido', () => pm.expect(pm.response.json().message).to.include('rango de fechas'));" ] } }] }
+      ]
+    },
+    {
+      "name": "Ventas - pruebas de API (usar datos de prueba)",
+      "item": [
+        { "name": "M-02 Registrar venta con cliente inactivo (espera 409)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"clienteId\": {{clienteInactivoId}},\n  \"detalles\": [{ \"productoId\": {{productoDisponibleId}}, \"cantidad\": 1 }]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/ventas" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('HTTP 409', () => pm.response.to.have.status(409));", "pm.test('Mensaje de cliente inactivo', () => pm.expect(pm.response.json().message).to.include('cliente inactivo'));" ] } }] },
+        { "name": "V-05 Registrar dos lineas con el mismo producto (exploratorio)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"clienteId\": {{clienteActivoId}},\n  \"detalles\": [\n    { \"productoId\": {{productoDisponibleId}}, \"cantidad\": 1 },\n    { \"productoId\": {{productoDisponibleId}}, \"cantidad\": 1 }\n  ]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/ventas", "description": "Solicitud con efecto: registra una venta y descuenta dos unidades. Ejecutar solo con producto de prueba y registrar la regla decidida." }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Registrar codigo de respuesta para la matriz', () => pm.expect([201,400,409]).to.include(pm.response.code));", "if (pm.response.code === 201) { pm.collectionVariables.set('ventaId', pm.response.json().id); }" ] } }] },
+        { "name": "M-01 Solicitar cantidad superior al stock disponible (espera 409)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"clienteId\": {{clienteActivoId}},\n  \"detalles\": [{ \"productoId\": {{productoStockBajoId}}, \"cantidad\": 999999 }]\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/ventas", "description": "Solicitud esperada a fallar; usar producto de prueba para no afectar datos reales." }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('HTTP 409', () => pm.response.to.have.status(409));", "pm.test('Respuesta explica stock insuficiente', () => pm.expect(pm.response.json().message).to.include('Stock insuficiente'));" ] } }] },
+        { "name": "Consultar una venta registrada", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/ventas/{{ventaId}}" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));", "pm.test('La venta devuelve detalles y total', () => { const v=pm.response.json(); pm.expect(v.detalles).to.be.an('array'); pm.expect(v.total).to.exist; });"] } }] }
+      ]
+    }
+  ]
+}
